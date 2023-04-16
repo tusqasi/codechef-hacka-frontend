@@ -23,8 +23,6 @@ const AdmissionApproval = (props: any) => {
 		[isAdhaarVisible, setIsAdhaarVisible],
 		[isMarksheetVisible, setIsMarkSheetVisible],
 		[isCapAllotmentVisible, setIsCapAllotmentVisible]]
-	console.log(props)
-	return (<><StudentList names={props.approved} /></>);
 	return (<>
 		<nav className="flex bg-black text-slate-50 text-5xl text-serif h-[2em]
 		justify-start items-center">
@@ -42,29 +40,30 @@ const AdmissionApproval = (props: any) => {
 				width={2000}
 				height={100}
 				src={"/images/confirmation_page.png"} alt="" />
-			<div className='flex justify-around mt-20 mb-20'>
-
-				{!isAdhaarVisible && !isCapAllotmentVisible && !isMarksheetVisible ? ["Adhaar", "12th Marksheet", "CAP ALLOTMENT LETTER"]
-					.map((name, _idx) =>
-						<div className={
-							bebas.className +
-							' bg-cyan-200 w-[300px] h-[300px] \
+			<div className='flex items-center'>
+				<StudentList names={props.approved} cb={setApplicant} />
+				<div className='flex justify-around mt-20 mb-20'>
+					{!isAdhaarVisible && !isCapAllotmentVisible && !isMarksheetVisible ? ["Adhaar", "12th Marksheet", "CAP ALLOTMENT LETTER"]
+						.map((name, _idx) =>
+							<div className={
+								bebas.className +
+								' bg-cyan-200 w-[300px] h-[300px] \
 							grid place-content-center text-6xl \
-							border-4 border-black \
+							border-4 border-black  mr-5\
 							text-center'}
-							onClick={() => visiblities[_idx][1](visiblities[_idx][0] ? false : true)
-							}>
-							{name}
-						</div>
+								onClick={() => visiblities[_idx][1](visiblities[_idx][0] ? false : true)
+								}>
+								{name}
+							</div>
 
-					) : <></>}
-				{
-					isAdhaarVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + current + "-adhaar.pdf"} cb={setIsAdhaarVisible} /> :
-						isMarksheetVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + current + "-marksheet.pdf"} cb={setIsMarkSheetVisible} /> :
-							isCapAllotmentVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + current + "-cap.pdf"} cb={setIsCapAllotmentVisible} /> : <></>
-				}
-			</div >
-
+						) : <></>}
+					{
+						isAdhaarVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + currentApplicant + "-adhaar.pdf"} cb={setIsAdhaarVisible} /> :
+							isMarksheetVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + currentApplicant + "-marksheet.pdf"} cb={setIsMarkSheetVisible} /> :
+								isCapAllotmentVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + currentApplicant + "-cap.pdf"} cb={setIsCapAllotmentVisible} /> : <></>
+					}
+				</div >
+			</div>
 		</div >
 
 	</>);
