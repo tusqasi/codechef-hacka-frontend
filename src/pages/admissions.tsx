@@ -22,20 +22,10 @@ const AdmissionsPage = () => {
 	const [adhaarId, setAdhaarId] = useState('');
 	const [marksheet, setMarksheet] = useState(null);
 	const [adhaar, setAdhaar] = useState(null);
-	const validataData = () => {
-		if (!name) { return false; }
-		if (!email) { return false; }
-		if (!phone) { return false; }
-		if (!adhaarId) { return false; }
-		if (!fees) { return false; }
-		if (!sbin) { return false; }
-	}
+	const [cap, setCap] = useState(null);
 	const handleSubmit = async (event: any) => {
 		// console.log("Handling submit")
 		event.preventDefault();
-		if (!validataData()) {
-			return;
-		}
 		const formData = new FormData();
 		formData.append('name', name.replaceAll(' ', '_'));
 		formData.append('email', email);
@@ -44,10 +34,11 @@ const AdmissionsPage = () => {
 		formData.append('fees', fees);
 		formData.append('sbin', sbin);
 		formData.append('documents', marksheet, name.replaceAll(' ', '_') + "-marksheet" + ".pdf");
-		formData.append('documents', adhaar, name.replaceAll(' ', '_') + "-marksheet" + ".pdf");
+		formData.append('documents', adhaar, name.replaceAll(' ', '_') + "-adhaar" + ".pdf");
+		formData.append('documents', cap, name.replaceAll(' ', '_') + "-cap" + ".pdf");
 
 		try {
-			const response = await axios.post('https://documentstore.tusqasi.repl.co/api/upload', formData);
+			const response = await axios.post('https://documentstore.tusqasi.repl.co/api/applicants_entry', formData);
 			// console.info(response.data);
 		} catch (error) {
 			console.error(error);
@@ -98,19 +89,27 @@ const AdmissionsPage = () => {
 							onChange={(e) => setFees(e.target.value)}
 						/>
 					</div>
-					<div className='flex justify-around mt-5'>
+					<span>Files to upload:</span>
+					<div className='flex justify-around mt-2'>
 						<input type="file" className='hidden' id="marksheet"
 							onChange={(e) => setMarksheet(e.target.files[0])}
 						/>
 						<label htmlFor="marksheet"
-							className='after:content-["Marksheet"] after:bg-white
+							className='after:content-["Marksheet"]
 							after:rounded-full border-2 border-black 
 							rounded-full p-1 bg-amber-100 ' >Choose </label>
 						<input type="file" className='hidden' id='adhaar'
 							onChange={(e) => setAdhaar(e.target.files[0])}
 						/>
 						<label htmlFor="adhaar"
-							className='after:content-["Adhaar"] after:bg-white 
+							className='after:content-["Adhaar"]
+							after:rounded-full border-2 border-black 
+							rounded-full p-1 bg-amber-100 ' >Choose </label>
+						<input type="file" className='hidden' id='cap'
+							onChange={(e) => setCap(e.target.files[0])}
+						/>
+						<label htmlFor="cap"
+							className='after:content-["CAP"] 
 							after:rounded-full border-2 border-black 
 							rounded-full p-1 bg-amber-100 ' >Choose </label>
 					</div>
