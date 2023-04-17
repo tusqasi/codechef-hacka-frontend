@@ -2,8 +2,11 @@ import Image from 'next/image';
 import { Old_Standard_TT, Bebas_Neue, Prompt } from 'next/font/google';
 import Viewer from './components/pdfviewer';
 import { useState } from 'react';
+// import { useRouter } from 'next/router';
+import Nav from './components/nav'
 import Studentlist from './components/studentslist';
-import StudentList from './components/studentslist';
+import axios, { Axios } from 'axios';
+
 
 const oldtt = Old_Standard_TT({ subsets: ['latin'], weight: ['400', '700'] });
 const bebas = Bebas_Neue({
@@ -13,9 +16,9 @@ const prompt = Prompt({
 	subsets: ['latin'],
 	weight: ['400']
 })
-const AdmissionApproval = (props: any) => {
+const AdmissionApproval = ({ unapproved: names }: { unapproved: Array<String> }) => {
 	/// get pdfs and show pdfs
-	const [currentApplicant, setApplicant] = useState('');
+	const [currentApplicant, setApplicant] = useState(names[0]);
 	const [isAdhaarVisible, setIsAdhaarVisible] = useState(false);
 	const [isMarksheetVisible, setIsMarkSheetVisible] = useState(false);
 	const [isCapAllotmentVisible, setIsCapAllotmentVisible] = useState(false);
@@ -23,12 +26,18 @@ const AdmissionApproval = (props: any) => {
 		[isAdhaarVisible, setIsAdhaarVisible],
 		[isMarksheetVisible, setIsMarkSheetVisible],
 		[isCapAllotmentVisible, setIsCapAllotmentVisible]]
-	return (<>
-		<nav className="flex bg-black text-slate-50 text-5xl text-serif h-[2em]
-		justify-start items-center">
-			<div className={oldtt.className + " font-normal ml-10"}>SGGSIE&T</div>
-		</nav>
 
+	function approveFlow(e: any) {
+		const rm_at = names.indexOf(currentApplicant)
+		const data = new FormData();
+		data.append('approved', names[rm_at])
+		console.log(data)
+		axios.get("https://documentstore.tusqasi.repl.co/api/approve_applicant/" + names[rm_at],)
+		names.splice(rm_at, 1);
+		setApplicant(names[0]);
+	}
+	return (<>
+		<Nav />
 		<div className='flex-col justify-center items-center w-100'>
 			<div className='z-10 absolute px-[1%] py-[-100px] '>
 				<span className={bebas.className + ' bg-[#DE6DD3] text-5xl '}>
@@ -41,7 +50,7 @@ const AdmissionApproval = (props: any) => {
 				height={100}
 				src={"/images/confirmation_page.png"} alt="" />
 			<div className='flex items-center'>
-				<StudentList names={props.approved} cb={setApplicant} />
+				<Studentlist names={names} cb={setApplicant} />
 				<div className='flex justify-around mt-20 mb-20'>
 					{!isAdhaarVisible && !isCapAllotmentVisible && !isMarksheetVisible ? ["Adhaar", "12th Marksheet", "CAP ALLOTMENT LETTER"]
 						.map((name, _idx) =>
@@ -54,9 +63,15 @@ const AdmissionApproval = (props: any) => {
 								onClick={() => visiblities[_idx][1](visiblities[_idx][0] ? false : true)
 								}>
 								{name}
-							</div>
 
+
+							</div>
 						) : <></>}
+
+					{
+						!isAdhaarVisible && !isMarksheetVisible && !isCapAllotmentVisible ?
+							<div className='bg-green-200 p-3 h-fit hover:border-4 hover:border-gray-800' onClick={approveFlow}>Approved</div> : <></>
+					}
 					{
 						isAdhaarVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + currentApplicant + "-adhaar.pdf"} cb={setIsAdhaarVisible} /> :
 							isMarksheetVisible ? <Viewer url={"https://documentstore.tusqasi.repl.co/" + currentApplicant + "-marksheet.pdf"} cb={setIsMarkSheetVisible} /> :
@@ -71,10 +86,9 @@ const AdmissionApproval = (props: any) => {
 
 export async function getServerSideProps() {
 	const res = await fetch("https://documentstore.tusqasi.repl.co/api/notapproved");
-	const approved = await res.json();
-	console.log(approved);
-	const names = approved.map((element, idx) => element.name);
-	console.log(names)
-	return { props: { approved } };
+	const unapproved = await res.json();
+	const names = unapproved.map((element, idx) => element.name);
+
+	return { props: { unapproved: names } };
 }
 export default AdmissionApproval;

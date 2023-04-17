@@ -1,7 +1,9 @@
 import Image from 'next/image';
 import axios from 'axios';
+import { useRouter } from 'next/router'
+
 import React, { useState } from 'react';
-import Nav from './components/nav';
+
 import { Old_Standard_TT, Bebas_Neue, Prompt } from 'next/font/google';
 
 const oldtt = Old_Standard_TT({ subsets: ['latin'], weight: ['400', '700'] });
@@ -12,7 +14,8 @@ const prompt = Prompt({
 	subsets: ['latin'],
 	weight: ['400']
 })
-const AdmissionsPage = () => {
+const ScholarshipPage = () => {
+
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
@@ -37,25 +40,28 @@ const AdmissionsPage = () => {
 		formData.append('documents', cap, name.replaceAll(' ', '_') + "-cap" + ".pdf");
 
 		try {
-			const response = await axios.post('https://documentstore.tusqasi.repl.co/api/applicants_entry', formData);
+			// const response = await axios.post('https://documentstore.tusqasi.repl.co/api/applicants_entry', formData);
 			// console.info(response.data);
 		} catch (error) {
 			console.error(error);
 		}
 	};
 	return (<>
-		<Nav />
+		<nav className="flex bg-black text-slate-50 text-5xl text-serif h-[2em] justify-start items-center">
+			<div className={oldtt.className + " font-normal ml-10"}>SGGSIE&T</div>
+		</nav>
+
 		<div className='flex-col justify-center items-center w-100'>
 			<div className='z-10 absolute px-[1%] py-[-10%] '>
 				<span className={bebas.className + ' bg-[#E8D39C] text-5xl'}>
-					ADMISSION FORM
+					Scholarship FORM
 				</span>
 			</div>
 			<Image
 				// className="w-[100%] "
-				width={2000}
-				height={100}
-				src={"/images/students.png"} alt="" />
+				width={2200}
+				height={1000}
+				src={"/images/graduation.png"} alt="" />
 
 			<div className='flex flex-row justify-center mb-5'>
 				<div className=' flex-col justify-start mt-5'>
@@ -109,6 +115,16 @@ const AdmissionsPage = () => {
 							after:rounded-full border-2 border-black 
 							rounded-full p-1 bg-amber-100 ' >Choose </label>
 					</div>
+
+					<div className='mt-5'>
+						<label htmlFor="scholarship">Choose a scholarshipr:</label>
+						<select name="scholarship" id="scholarship">
+							<option value="Rajashri Shau">Rajashri Shau</option>
+							<option value="SRTMNU">SRTMNU</option>
+							<option value="MIT">MIT</option>
+							<option value="EWS">EWS</option>
+						</select>
+					</div>
 				</div>
 
 
@@ -122,4 +138,4 @@ const AdmissionsPage = () => {
 
 	</>);
 }
-export default AdmissionsPage;
+export default ScholarshipPage;
