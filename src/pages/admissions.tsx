@@ -26,6 +26,19 @@ const AdmissionsPage = () => {
 		// console.log("Handling submit")
 		event.preventDefault();
 		const formData = new FormData();
+		if (!name
+			&& !email
+			&& !phone
+			&& !adhaarId
+			&& !fees
+			&& !sbin
+			&& !marksheet
+			&& !adhaar
+			&& !cap
+		) {
+			console.error("Fill correct values in the form!")
+			return;
+		}
 		formData.append('name', name.replaceAll(' ', '_'));
 		formData.append('email', email);
 		formData.append('phone', phone);
