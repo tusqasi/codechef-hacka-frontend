@@ -19,9 +19,9 @@ const AdmissionsPage = () => {
 	const [fees, setFees] = useState('');
 	const [sbin, setSbin] = useState('');
 	const [adhaarId, setAdhaarId] = useState('');
-	const [marksheet, setMarksheet] = useState(null);
-	const [adhaar, setAdhaar] = useState(null);
-	const [cap, setCap] = useState(null);
+	const [marksheet, setMarksheet] = useState("");
+	const [adhaar, setAdhaar] = useState("");
+	const [cap, setCap] = useState("");
 	const handleSubmit = async (event: any) => {
 		// console.log("Handling submit")
 		event.preventDefault();
@@ -50,7 +50,7 @@ const AdmissionsPage = () => {
 		formData.append('documents', cap, name.replaceAll(' ', '_') + "-cap" + ".pdf");
 
 		try {
-			const response = await axios.post('https://documentstore.tusqasi.repl.co/api/applicants_entry', formData);
+			await axios.post('https://documentstore.tusqasi.repl.co/api/applicants_entry', formData);
 			// console.info(response.data);
 		} catch (error) {
 			console.error(error);

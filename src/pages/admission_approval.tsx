@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Image from 'next/image';
 import { Old_Standard_TT, Bebas_Neue, Prompt } from 'next/font/google';
 import Viewer from './components/pdfviewer';
@@ -6,7 +7,6 @@ import { useState } from 'react';
 import Nav from './components/nav'
 import Studentlist from './components/studentslist';
 import axios, { Axios } from 'axios';
-
 
 const oldtt = Old_Standard_TT({ subsets: ['latin'], weight: ['400', '700'] });
 const bebas = Bebas_Neue({
@@ -25,13 +25,13 @@ const AdmissionApproval = ({ unapproved: names }: { unapproved: Array<String> })
 	const visiblities = [
 		[isAdhaarVisible, setIsAdhaarVisible],
 		[isMarksheetVisible, setIsMarkSheetVisible],
-		[isCapAllotmentVisible, setIsCapAllotmentVisible]]
+		[isCapAllotmentVisible, setIsCapAllotmentVisible]];
 
 	function approveFlow(e: any) {
-		const rm_at = names.indexOf(currentApplicant)
+		const rm_at = names.indexOf(currentApplicant ?? "")
 		const data = new FormData();
-		data.append('approved', names[rm_at])
-		console.log(data)
+		const name = names[rm_at]?.toString() ?? "";
+		data.append('approved', name);
 		axios.get("https://documentstore.tusqasi.repl.co/api/approve_applicant/" + names[rm_at],)
 		names.splice(rm_at, 1);
 		setApplicant(names[0]);
@@ -60,7 +60,9 @@ const AdmissionApproval = ({ unapproved: names }: { unapproved: Array<String> })
 							grid place-content-center text-6xl \
 							border-4 border-black  mr-5\
 							text-center'}
-								onClick={() => visiblities[_idx][1](visiblities[_idx][0] ? false : true)
+								onClick={() => {
+									visiblities[_idx][1](visiblities[_idx][0] ? false : true)
+								}
 								}>
 								{name}
 
@@ -87,7 +89,7 @@ const AdmissionApproval = ({ unapproved: names }: { unapproved: Array<String> })
 export async function getServerSideProps() {
 	const res = await fetch("https://documentstore.tusqasi.repl.co/api/notapproved");
 	const unapproved = await res.json();
-	const names = unapproved.map((element, idx) => element.name);
+	const names = unapproved.map((element: any, idx: any) => element.name);
 
 	return { props: { unapproved: names } };
 }
